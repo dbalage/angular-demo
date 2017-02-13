@@ -1,0 +1,18 @@
+﻿@model Verseny
+
+<h1>@Model.Nev</h1>
+
+<table>
+    <thead>
+
+    </thead>
+    <tbody>
+        @foreach (Hajo hajo in Model.NevezettHajok)
+        {
+            <tr>
+                <td>@hajo.Nev</td>
+                <td><button type="button">Legénység</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
