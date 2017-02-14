@@ -7,6 +7,7 @@ namespace HajoVerseny.Models
 {
     public class Hajo
     {
+        public int Id { get; set; }
         public string Nev { get; set; }
         public int VitorlaSzam { get; set; }
         public HajoTipus Tipus { get; set; }

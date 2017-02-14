@@ -7,6 +7,9 @@ namespace HajoVerseny.Models
 {
     public class Versenyzo
     {
+        public int Id { get; set; }
         public string Nev { get; set; }
+        public string SzuletesiDatum { get; set; }
+        public Nem Nem { get; set; }
     }
 }

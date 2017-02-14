@@ -1,0 +1,40 @@
+﻿@model HajoVerseny.Models.Hajo
+
+<form class="form-horizontal">
+   <div class="form-group">
+      <label class="col-sm-2 control-label">Név</label>
+      <div class="col-sm-10">
+         @Html.TextBoxFor(m => m.Nev, new { @class = "form-control"})
+      </div>
+   </div>
+   <div class="form-group">
+      <label class="col-sm-2 control-label">Típus</label>
+      <div class="col-sm-10">
+         @Html.DropDownListFor(m => m.Tipus, Html.GetEnumSelectList(typeof(HajoTipus)), new { @class = "form-control" })
+      </div>
+   </div>
+   <div class="form-group">
+      <label class="col-sm-2 control-label">Vitorlaszám</label>
+      <div class="col-sm-10">
+         @Html.TextBoxFor(m => m.VitorlaSzam, new { @class = "form-control" })
+      </div>
+   </div>
+   <div class="form-group">
+      <label class="col-sm-2 control-label">Versenyzők</label>
+      <div class="col-sm-9 sticker-container">
+         @foreach (var versenyzo in Model.Versenyzok)
+         {
+             <div class="sticker"
+                  onclick="initEditVersenyzo(this)" 
+                  data-nev="@versenyzo.Nev"
+                  data-nem="@((int)versenyzo.Nem)"
+                  data-szuletes="@versenyzo.SzuletesiDatum">
+                <span class="nev">@versenyzo.Nev</span><a class="glyphicon glyphicon-remove" onclick="removeVersenyzo(event)"></a>
+             </div>
+         }
+      </div>
+      <div class="col-sm-1">
+         <a onclick="initAddVersenyzo()" class="glyphicon glyphicon-plus"></a>
+      </div>
+   </div>
+</form>

@@ -2,17 +2,156 @@
 
 <h1>@Model.Nev</h1>
 
-<table>
-    <thead>
-
-    </thead>
-    <tbody>
-        @foreach (Hajo hajo in Model.NevezettHajok)
-        {
-            <tr>
-                <td>@hajo.Nev</td>
-                <td><button type="button">Legénység</button></td>
-            </tr>
-        }
-    </tbody>
+<table class="table">
+   <thead>
+      <tr>
+         <th>Név</th>
+         <th>Típus</th>
+         <th>Vitorlaszám</th>
+         <th>Versenyzők</th>
+         <th>Műveletek</th>
+      </tr>
+   </thead>
+   <tbody>
+      @foreach (Hajo hajo in Model.NevezettHajok)
+      {
+         <tr>
+            <td>@hajo.Nev</td>
+            <td>@hajo.Tipus.GetDisplayName()</td>
+            <td>@hajo.VitorlaSzam</td>
+            <td>@string.Join(", ", hajo.Versenyzok.Select(v => v.Nev))</td>
+            <td><a class="glyphicon glyphicon-edit" onclick="initEditModal('@hajo.Id')"></a></td>
+         </tr>
+      }
+   </tbody>
 </table>
+
+<div id="edit-modal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Hajó szerkesztése</h4>
+         </div>
+         <div class="modal-body">
+
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-success" onclick="save()">Mentés</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Mégse</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div id="edit-versenyzo-modal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Versenyző szerkesztése</h4>
+         </div>
+         <div class="modal-body">
+            @Html.Partial("EditVersenyzo", new Versenyzo())
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-success" onclick="saveVersenyzo()">Mentés</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Mégse</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+@section scripts
+{
+   <script>
+      function initEditModal(id) {
+         $.get("@Url.Action("Edit", "Verseny")/" + id, function (data) {
+            $("#edit-modal .modal-body").html(data);
+            $("#edit-modal").modal("show");
+         })
+      }
+
+      var versenyzoToEdit = null;
+
+      function initAddVersenyzo() {
+         versenyzoToEdit = null
+         $("#edit-versenyzo-modal form")[0].reset();
+         $("#edit-versenyzo-modal").modal("show");
+      }
+
+      function initEditVersenyzo(versenyzo) {
+         versenyzoToEdit = $(versenyzo);
+         var modal = $("#edit-versenyzo-modal");
+         modal.find("#Nev").val(versenyzoToEdit.data("nev"));
+         modal.find("#Nem").val(versenyzoToEdit.data("nem"));
+         modal.find("#SzuletesiDatum").val(versenyzoToEdit.data("szuletes"));
+         modal.modal("show");
+      }
+
+      function removeVersenyzo(e) {
+         e.stopPropagation();
+         $(e.target).parent().remove();
+      }
+
+      function saveVersenyzo() {
+         var modal = $("#edit-versenyzo-modal");
+         var nev = modal.find("#Nev").val();
+         var nem = modal.find("#Nem").val();
+         var szuletes = modal.find("#SzuletesiDatum").val();
+
+         var target;
+
+         if (versenyzoToEdit != null) {
+            target = versenyzoToEdit;
+         } else {
+            target = $("<div onclick='initEditVersenyzo(this)' class='sticker'><span class='nev'></span><a class='glyphicon glyphicon-remove' onclick='removeVersenyzo(event)'></a></div>");
+         }
+
+         target.find(".nev").text(nev);
+         target.data("nev", nev);
+         target.data("nem", nem);
+         target.data("szuletes", szuletes);
+
+         if (versenyzoToEdit == null) {
+            $("#edit-modal .sticker-container").append(target);
+         }
+
+         modal.modal("hide");
+      }
+
+      function save() {
+         var modal = $("#edit-modal");
+
+         var versenyzok = [];
+         modal.find(".sticker").each(function (i, v) {
+            var versenyzo = {
+               Nev: $(v).data("nev"),
+               Nem: $(v).data("nem"),
+               SzuletesiDatum: $(v).data("szuletes")
+            }
+
+            versenyzok.push(versenyzo);
+         })
+
+         var data = {
+            Nev: modal.find("#Nev").val(),
+            Tipus: modal.find("#Tipus").val(),
+            VitorlaSzam: modal.find("#VitorlaSzam").val(),
+            Versenyzok: versenyzok
+         }
+
+         $.ajax({
+            type: "POST",
+            url: "@Url.Action("Edit", "Verseny")",
+            data: JSON.stringify(data),
+            success: function () { modal.modal("hide"); },
+            contentType: "application/json"
+         });
+
+         @*$.post("@Url.Action("Edit", "Verseny")", JSON.stringify(data), function () {
+            modal.modal("hide");
+         })*@
+      }
+   </script>
+}

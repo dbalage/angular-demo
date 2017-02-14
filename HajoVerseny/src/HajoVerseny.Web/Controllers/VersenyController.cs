@@ -4,35 +4,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using HajoVerseny.Models;
-
+using HajoVerseny.Web.Services;
 
 namespace HajoVerseny.Web.Controllers
 {
     public class VersenyController : Controller
     {
 
-
         public IActionResult Details()
         {
-            Verseny verseny = new Verseny
+            var model = new Verseny
             {
-                Nev = "Kék szalag",
-                NevezettHajok = new List<Hajo>
-                {
-                    new Hajo
-                    {
-                        Nev = "Diablo",
-                        Tipus = HajoTipus.Finn,
-                        VitorlaSzam = 1466,
-                        Versenyzok = new List<Versenyzo>
-                        {
-
-                        }
-                    },
-                }
+                Nev = "Kékszalag",
+                NevezettHajok = HajoService.GetHajok()
             };
 
-            return View();
+            return View(model);
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var hajo = HajoService.GetHajo(id);
+
+            return PartialView(hajo);
+        }
+
+        [HttpPost]
+        public IActionResult Edit([FromBody]Hajo model)
+        {
+            return Ok();
         }
     }
 }

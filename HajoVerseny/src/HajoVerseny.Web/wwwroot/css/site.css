@@ -11,11 +11,11 @@
 }
 
 /* Set widths on the form inputs since otherwise they're 100% wide */
-input,
+/*input,
 select,
 textarea {
     max-width: 280px;
-}
+}*/
 
 /* Carousel */
 .carousel-caption p {
@@ -35,4 +35,19 @@ textarea {
   .carousel-caption {
     display: none
   }
+}
+
+.sticker{
+   padding: 5px;
+   border: 1px solid #000;
+   display: inline-block;
+   cursor: pointer;
+}
+
+.glyphicon{
+   cursor: pointer;
+}
+
+.sticker .glyphicon{
+   margin-left: 5px;
 }
