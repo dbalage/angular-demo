@@ -1,0 +1,21 @@
+﻿@model List<HajoVerseny.Models.Verseny>
+
+<h1>Versenyek</h1>
+
+<table class="table">
+   <thead>
+      <tr>
+         <th>Név</th>
+         <th>Műveletek</th>
+      </tr>
+   </thead>
+   <tbody>
+      @foreach (var verseny in Model)
+      {
+         <tr>
+            <td>@verseny.Nev</td>
+            <td><a href="@Url.Action("Details", "Verseny", new { nev = verseny.Nev })" class="glyphicon glyphicon-eye-open"></a></td>
+         </tr>
+      }
+   </tbody>
+</table>

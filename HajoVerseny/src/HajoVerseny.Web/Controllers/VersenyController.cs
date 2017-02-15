@@ -10,12 +10,24 @@ namespace HajoVerseny.Web.Controllers
 {
     public class VersenyController : Controller
     {
+        public IActionResult Index()
+        {
+            var versenyek = new List<Verseny>
+            {
+                new Verseny { Nev = "Kékszalag" },
+                new Verseny { Nev = "Alba Regia Kupa" },
+                new Verseny { Nev = "Silwell Kupa" }
+            };
 
-        public IActionResult Details()
+            return View(versenyek);
+        }
+
+
+        public IActionResult Details(string nev)
         {
             var model = new Verseny
             {
-                Nev = "Kékszalag",
+                Nev = nev,
                 NevezettHajok = HajoService.GetHajok()
             };
 
